@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mage.crm.dao.CusLinkmanDao">
+    <resultMap id="BaseResultMap" type="cusLinkman" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="cus_id" property="cusId" jdbcType="INTEGER" />
+        <result column="link_name" property="linkName" jdbcType="VARCHAR" />
+        <result column="sex" property="sex" jdbcType="VARCHAR" />
+        <result column="zhiwei" property="zhiwei" jdbcType="VARCHAR" />
+        <result column="office_phone" property="officePhone" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="is_valid" property="isValid" jdbcType="INTEGER" />
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, cus_id, link_name, sex, zhiwei, office_phone, phone, is_valid, create_date, update_date
+    </sql>
+    <select id="queryCusLinkman" parameterType="cusLinkmanQuery" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List"/>
+        from t_customer_linkman
+        where is_valid=1 and cus_id=#{cusId}
+    </select>
+    <insert id="addCusLinkman" parameterType="cusLinkman">
+    insert into t_customer_linkman (cus_id, link_name, sex,
+      zhiwei, office_phone, phone,
+      is_valid, create_date, update_date
+      )
+    values (#{cusId,jdbcType=INTEGER}, #{linkName,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+      #{zhiwei,jdbcType=VARCHAR}, #{officePhone,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+      #{isValid,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
+      )
+    </insert>
+    <update id="updateCusLinkman" parameterType="cusLinkman">
+        update t_customer_linkman
+        <set >
+            <if test="cusId != null" >
+                cus_id = #{cusId,jdbcType=INTEGER},
+            </if>
+            <if test="linkName != null" >
+                link_name = #{linkName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="zhiwei != null" >
+                zhiwei = #{zhiwei,jdbcType=VARCHAR},
+            </if>
+            <if test="officePhone != null" >
+                office_phone = #{officePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null" >
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null" >
+                is_valid = #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null" >
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null" >
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

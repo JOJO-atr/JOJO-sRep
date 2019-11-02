@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mage.crm.dao.PermissionDao">
+    <select id="queryCheckedModuleByRid" parameterType="int" resultType="int">
+        select module_id
+        from t_permission
+        where role_id=#{rid}
+    </select>
+    <select id="queryPermissionByRid" parameterType="int" resultType="int">
+        select count(1)
+        from t_permission
+        where role_id=#{rid}
+    </select>
+    <delete id="deletePermission" parameterType="int">
+        delete from t_permission where role_id=#{rid}
+    </delete>
+    <select id="queryAcValueByMid"  resultType="string">
+        select m.opt_value
+        from t_permission p left join t_module m
+        on p.module_id=m.id
+        where m.id=#{moduleId}  and m.is_valid=1
+        group by m.id
+    </select>
+    <insert id="insertBatch" parameterType="list">
+        insert into t_permission(role_id, module_id, acl_value,
+         create_date , update_date)
+        VALUE
+         <foreach collection="list" separator="," item="item">
+              (#{item.roleId},#{item.moduleId},#{item.aclValue},#{item.createDate},#{item.updateDate})
+         </foreach>
+    </insert>
+    <select id="queryPermissionByUid" parameterType="string" resultType="string">
+        select p.acl_value 'aclValue'
+        from t_permission p
+        left join t_user_role ur on p.role_id=ur.role_id
+        left join t_user u on ur.user_id=u.id
+        where u.id=#{id}
+        group by p.acl_value
+    </select>
+    <select id="queryPermissionByMid" parameterType="list" resultType="int">
+        select count(1)
+        from t_permission
+        where module_id in
+        <foreach collection="list" item="item" close=")" open="(" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <delete id="deleteBatch" parameterType="list">
+        delete from t_permission
+        where module_id in
+        <foreach collection="list" item="item" close=")" open="(" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>
